@@ -25,5 +25,14 @@ void setup() {
 
 void loop() {
   
+}
 
+// Para facilitar o código, apagando todos os leds e deixando apenas os necessários acesos!
+
+void apagaLed(){
+  digitalWrite(luzVermelhaCarros, LOW);
+  digitalWrite(luzAmarelaCarros, LOW);
+  digitalWrite(luzVerdeCarros, LOW);
+  digitalWrite(luzVermelhaPedestres, LOW);
+  digitalWrite(luzVerdePedestres, LOW);
 }
