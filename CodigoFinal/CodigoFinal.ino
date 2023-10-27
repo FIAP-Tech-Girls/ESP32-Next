@@ -7,13 +7,13 @@ Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 // Definindo leds
 
 // Carros
-int ledVermelhoCarros = 33;
-int ledAmareloCarros = 25;
-int ledVerdeCarros = 26;
+int luzVermelhaCarros = 33;
+int luzAmarelaCarros = 25;
+int luzVerdeCarros = 26;
 
 // Pedestres
-int ledVermelhoPedestres = 27;
-int ledVerdePedestres = 32;
+int luzVermelhaPedestres = 27;
+int luzVerdePedestres = 32;
 
 // Definindo botão 
 int botaoPedestres = 18;
