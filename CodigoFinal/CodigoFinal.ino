@@ -18,9 +18,32 @@ int ledVerdePedestres = 32;
 // Definindo botão 
 int buttonPin = 18;
 
-void setup() {
-  
+// Defina os estados para controlar o semáforo dos carros
+enum CarState {
+  GREEN,
+  YELLOW,
+  RED
+};
 
+// Variáveis para controlar o estado do semáforo dos carros
+CarState carState = RED;  // Comece com o estado vermelho
+unsigned long lastCarStateChange = 0;
+unsigned long carStateDuration = 10000;  // Tempo em milissegundos para cada estado dos carros
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Botão
+  pinMode(buttonPin,  INPUT_PULLUP);
+
+  // Leds - Carros
+  pinMode(luzVermelhaCarros, OUTPUT);
+  pinMode(luzAmarelaCarros, OUTPUT);
+  pinMode(luzVerdeCarros, OUTPUT);
+  
+  // Leds - Pedestres
+  pinMode(luzVermelhaPedestres, OUTPUT);
+  pinMode(luzVerdePedestres, OUTPUT);
 }
 
 void loop() {
@@ -28,7 +51,6 @@ void loop() {
 }
 
 // Para facilitar o código, apagando todos os leds e deixando apenas os necessários acesos!
-
 void apagaLed(){
   digitalWrite(luzVermelhaCarros, LOW);
   digitalWrite(luzAmarelaCarros, LOW);
