@@ -96,6 +96,51 @@ void loop() {
 
     botaoPressionado = false; // Reinicia a variável de botão pressionado para falso
   }
+
+  // Controlar as mudanças de estado do semáforo dos carros
+  unsigned long currentMillis = millis();
+  switch (carState) {
+    case GREEN:
+      if (carroContador == 0) {
+        carState = YELLOW;
+        lastCarStateChange = currentMillis;
+      }
+      break;
+
+    case YELLOW:
+      if (currentMillis - lastCarStateChange >= 2000) {  // Tempo de espera da luz amarela: 2 segundos
+        carState = RED;
+        lastCarStateChange = currentMillis;
+      }
+      break;
+
+    case RED:
+      if (currentMillis - lastCarStateChange >= carStateDuration) {
+        carState = GREEN;
+        lastCarStateChange = currentMillis;
+      }
+      break;
+  }
+
+  // Controlar as luzes com base no estado atual do semáforo dos carros
+  switch (carState) {
+    case GREEN:
+      apagaLed();
+      digitalWrite(luzVerdeCarros, HIGH);
+      digitalWrite(luzVermelhaPedestres, HIGH);
+      break;
+
+    case YELLOW:
+      apagaLed();
+      digitalWrite(luzAmarelaCarros, HIGH);
+      break;
+
+    case RED:
+      apagaLed();
+      digitalWrite(luzVermelhaCarros, HIGH);
+      digitalWrite(luzVerdePedestres, HIGH);
+      break;
+  }
 }
 
 // Para facilitar o código, apagando todos os leds e deixando apenas os necessários acesos!
