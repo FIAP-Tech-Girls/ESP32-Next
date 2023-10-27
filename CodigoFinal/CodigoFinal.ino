@@ -30,6 +30,8 @@ CarState carState = RED;  // Comece com o estado vermelho
 unsigned long lastCarStateChange = 0;
 unsigned long carStateDuration = 10000;  // Tempo em milissegundos para cada estado dos carros
 
+bool botaoPressionado = false;
+
 void setup() {
   Serial.begin(115200);
   
