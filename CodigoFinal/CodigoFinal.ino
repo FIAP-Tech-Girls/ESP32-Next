@@ -1,22 +1,24 @@
-// Sensor de distância 
-
 #include "Adafruit_VL53L0X.h"
 
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
+int carroContador;
+
 // Definindo leds
 
 // Carros
-int ledVermelhoCarros = 33;
-int ledAmareloCarros = 25;
-int ledVerdeCarros = 26;
+int luzVermelhaCarros = 33;
+int luzAmarelaCarros = 25;
+int luzVerdeCarros = 26;
 
 // Pedestres
-int ledVermelhoPedestres = 27;
-int ledVerdePedestres = 32;
+int luzVermelhaPedestres = 27;
+int luzVerdePedestres = 32;
 
 // Definindo botão 
 int botaoPedestres = 18;
+
+bool botaoPressionado = false; // Facilita código 
 
 // Defina os estados para controlar o semáforo dos carros
 enum CarState {
@@ -30,11 +32,11 @@ CarState carState = RED;  // Comece com o estado vermelho
 unsigned long lastCarStateChange = 0;
 unsigned long carStateDuration = 10000;  // Tempo em milissegundos para cada estado dos carros
 
-bool botaoPressionado = false;
+void apagaLed();
 
 void setup() {
   Serial.begin(115200);
-  
+
   // Botão
   pinMode(botaoPedestres,  INPUT_PULLUP);
 
@@ -46,12 +48,28 @@ void setup() {
   // Leds - Pedestres
   pinMode(luzVermelhaPedestres, OUTPUT);
   pinMode(luzVerdePedestres, OUTPUT);
+
+  // Sensor distância
+  // wait until serial port opens for native USB devices
+  while (! Serial) {
+    Serial.print('.');
+    delay(100);
+  }
+  
+  Serial.println("Adafruit VL53L0X test");
+  if (!lox.begin()) {
+    Serial.println(F("Failed to boot VL53L0X"));
+    while(1);
+  }
+  // power 
+  Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
 }
 
+
 void loop() {
-  
+  // Sensor de distância
   VL53L0X_RangingMeasurementData_t measure;
-  
+    
   Serial.print("Reading a measurement... ");
   lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
@@ -70,7 +88,7 @@ void loop() {
     carroContador = 0;
   } else if (distancia < 200 && distancia >= 20) {
     carroContador++;
-  }    
+  }
 
   // Verificar se o botão de pedestres foi pressionado
   if (digitalRead(botaoPedestres) == LOW) {
@@ -81,12 +99,13 @@ void loop() {
   if (botaoPressionado) {
     apagaLed(); // Desliga todas as luzes
 
-    digitalWrite(luzVermelhaCarros, HIGH); // Fecha o semáforo dos carros
     digitalWrite(luzAmarelaCarros, HIGH);
 
     delay(2000); // Delay de 2 segundos para a transição
 
     digitalWrite(luzAmarelaCarros, LOW); // Desliga a luz amarela dos carros
+
+    digitalWrite(luzVermelhaCarros, HIGH); // Fecha semafóro de carros
 
     digitalWrite(luzVerdePedestres, HIGH); // Abre o semáforo dos pedestres
 
@@ -97,7 +116,7 @@ void loop() {
     botaoPressionado = false; // Reinicia a variável de botão pressionado para falso
   }
 
-  // Controlar as mudanças de estado do semáforo dos carros
+    // Controlar as mudanças de estado do semáforo dos carros
   unsigned long currentMillis = millis();
   switch (carState) {
     case GREEN:
@@ -141,6 +160,7 @@ void loop() {
       digitalWrite(luzVerdePedestres, HIGH);
       break;
   }
+    
 }
 
 // Para facilitar o código, apagando todos os leds e deixando apenas os necessários acesos!
